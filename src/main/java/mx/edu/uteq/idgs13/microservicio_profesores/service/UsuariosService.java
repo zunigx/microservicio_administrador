@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mx.edu.uteq.idgs13.microservicio_profesores.dto.UsuarioViewDto;
+import mx.edu.uteq.idgs13.microservicio_profesores.dto.UsuarioEditDto;
 import mx.edu.uteq.idgs13.microservicio_profesores.entity.UsuariosEntity;
 import mx.edu.uteq.idgs13.microservicio_profesores.entity.TipoUsuario;
 import mx.edu.uteq.idgs13.microservicio_profesores.entity.ProfesoresDivisiones;
@@ -48,6 +49,60 @@ public class UsuariosService {
         return getUsuariosByTipo(TipoUsuario.ALUMNO);
     }
 
+    // Editar usuario
+    public UsuarioViewDto editarUsuario(UsuarioEditDto usuarioEditDto) {
+        UsuariosEntity usuario = usuariosRepository.findById(usuarioEditDto.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Guardar las divisiones existentes si es profesor
+            List<ProfesoresDivisiones> divisionesExistentes = null;
+            if (usuario.getTipoUsuario() == TipoUsuario.PROFESOR) {
+                divisionesExistentes = usuario.getDivisiones();
+            }
+
+        usuario.setNombre(usuarioEditDto.getNombre());
+        usuario.setEmail(usuarioEditDto.getEmail());
+        usuario.setTipoUsuario(usuarioEditDto.getTipoUsuario());
+        usuario.setActivo(usuarioEditDto.isActivo());
+        
+        // Campos específicos según el tipo de usuario
+        switch (usuarioEditDto.getTipoUsuario()) {
+            case ALUMNO:
+                usuario.setMatricula(usuarioEditDto.getMatricula());
+                usuario.setCarrera(usuarioEditDto.getCarrera());
+                usuario.setSemestre(usuarioEditDto.getSemestre());
+                // Limpiar campos no relacionados
+                usuario.setAreaCoordinacion(null);
+                usuario.setNivelAcceso(null);
+                usuario.getDivisiones().clear();  // BIEN
+                break;
+            case COORDINADOR:
+                usuario.setAreaCoordinacion(usuarioEditDto.getAreaCoordinacion());
+                usuario.setNivelAcceso(usuarioEditDto.getNivelAcceso());
+                // Limpiar campos no relacionados
+                usuario.setMatricula(null);
+                usuario.setCarrera(null);
+                usuario.setSemestre(null);
+                usuario.getDivisiones().clear();  // BIEN
+                break;
+            case PROFESOR:
+                // Limpiar los campos específicos de otros tipos de usuario
+                usuario.setMatricula(null);
+                usuario.setCarrera(null);
+                usuario.setSemestre(null);
+                usuario.setAreaCoordinacion(null);
+                usuario.setNivelAcceso(null);
+                    // Mantener las divisiones existentes si ya era profesor
+                    if (divisionesExistentes != null) {
+                        usuario.setDivisiones(divisionesExistentes);
+                    }
+                    break;
+        }
+
+        usuario = usuariosRepository.save(usuario);
+        return convertToDto(usuario);
+    }
+
     // Obtener usuario por ID
     public UsuarioViewDto getUsuarioById(Long id) throws Exception {
         UsuariosEntity usuario = usuariosRepository.findById(id)
@@ -61,32 +116,7 @@ public class UsuariosService {
         return convertToDto(saved);
     }
 
-    // Actualizar usuario
-    public UsuarioViewDto updateUsuario(Long id, UsuariosEntity usuarioActualizado) throws Exception {
-        UsuariosEntity usuario = usuariosRepository.findById(id)
-            .orElseThrow(() -> new Exception("Usuario no encontrado con id: " + id));
-        
-        usuario.setNombre(usuarioActualizado.getNombre());
-        usuario.setEmail(usuarioActualizado.getEmail());
-        usuario.setActivo(usuarioActualizado.isActivo());
-        
-        // Actualizar campos específicos según el tipo
-        if (usuario.getTipoUsuario() == TipoUsuario.PROFESOR) {
-            if (usuarioActualizado.getDivisiones() != null) {
-                usuario.setDivisiones(usuarioActualizado.getDivisiones());
-            }
-        } else if (usuario.getTipoUsuario() == TipoUsuario.ALUMNO) {
-            usuario.setMatricula(usuarioActualizado.getMatricula());
-            usuario.setCarrera(usuarioActualizado.getCarrera());
-            usuario.setSemestre(usuarioActualizado.getSemestre());
-        } else if (usuario.getTipoUsuario() == TipoUsuario.COORDINADOR) {
-            usuario.setAreaCoordinacion(usuarioActualizado.getAreaCoordinacion());
-            usuario.setNivelAcceso(usuarioActualizado.getNivelAcceso());
-        }
-        
-        UsuariosEntity saved = usuariosRepository.save(usuario);
-        return convertToDto(saved);
-    }
+
 
     // Eliminar usuario
     public void deleteUsuario(Long id) throws Exception {

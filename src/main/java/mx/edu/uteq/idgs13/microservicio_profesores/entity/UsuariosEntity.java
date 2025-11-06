@@ -2,6 +2,8 @@ package mx.edu.uteq.idgs13.microservicio_profesores.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,8 +26,8 @@ public class UsuariosEntity {
 
     // ===== CAMPOS PARA PROFESORES =====
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "usuario_id")
-    private List<ProfesoresDivisiones> divisiones;
+@JoinColumn(name = "usuario_id") // Crea FK en profesores_divisiones
+private List<ProfesoresDivisiones> divisiones = new ArrayList<>();
 
     // ===== CAMPOS PARA ALUMNOS =====
     @Column(name = "matricula")
