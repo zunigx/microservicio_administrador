@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import mx.edu.uteq.idgs13.microservicio_profesores.dto.UsuarioViewDto;
+import mx.edu.uteq.idgs13.microservicio_profesores.dto.UsuarioEditDto;
 import mx.edu.uteq.idgs13.microservicio_profesores.entity.UsuariosEntity;
 import mx.edu.uteq.idgs13.microservicio_profesores.service.UsuariosService;
 
@@ -90,9 +91,12 @@ public class UsuariosController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUsuario(
             @PathVariable Long id, 
-            @RequestBody UsuariosEntity usuario) {
+            @RequestBody UsuarioEditDto usuarioEditDto) {
+        if (!id.equals(usuarioEditDto.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
-            UsuarioViewDto updated = usuariosService.updateUsuario(id, usuario);
+            UsuarioViewDto updated = usuariosService.editarUsuario(usuarioEditDto);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
