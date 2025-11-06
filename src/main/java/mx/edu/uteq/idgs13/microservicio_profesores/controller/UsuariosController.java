@@ -135,4 +135,34 @@ public class UsuariosController {
                 .body("Error: " + e.getMessage());
         }
     }
+
+    /**
+     * PATCH /api/usuarios/{id}/habilitar
+     * Marca al usuario como activo
+     */
+    @PatchMapping("/{id}/habilitar")
+    public ResponseEntity<?> habilitarUsuario(@PathVariable Long id) {
+        try {
+            UsuarioViewDto updated = usuariosService.updateUsuarioStatus(id, true);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * PATCH /api/usuarios/{id}/deshabilitar
+     * Marca al usuario como inactivo
+     */
+    @PatchMapping("/{id}/deshabilitar")
+    public ResponseEntity<?> deshabilitarUsuario(@PathVariable Long id) {
+        try {
+            UsuarioViewDto updated = usuariosService.updateUsuarioStatus(id, false);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Error: " + e.getMessage());
+        }
+    }
 }
