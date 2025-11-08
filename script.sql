@@ -1,11 +1,3 @@
-
--- ================== COORDINADORES ====================
-INSERT INTO usuarios (nombre, email, tipo_usuario, activo, area_coordinacion, nivel_acceso) VALUES 
-('Dra. María Elena González Pérez', 'maria.gonzalez@uteq.edu.mx', 'COORDINADOR', true, 'Ingeniería en Desarrollo de Software', 'ADMINISTRADOR'),
-('Dr. Carlos Alberto Ramírez', 'carlos.ramirez@uteq.edu.mx', 'COORDINADOR', true, 'Ingeniería Industrial', 'COORDINADOR'),
-('Mtra. Ana Patricia Martínez', 'ana.martinez@uteq.edu.mx', 'COORDINADOR', true, 'Tecnologías de la Información', 'COORDINADOR'),
-('Dr. Jorge Luis Fernández', 'jorge.fernandez@uteq.edu.mx', 'COORDINADOR', true, 'Ingeniería en Sistemas', 'COORDINADOR');
-
 -- ================== PROFESORES ====================
 INSERT INTO usuarios (nombre, email, tipo_usuario, activo) VALUES 
 ('Ing. Juan Manuel Pérez López', 'juan.perez@uteq.edu.mx', 'PROFESOR', true),
@@ -14,6 +6,13 @@ INSERT INTO usuarios (nombre, email, tipo_usuario, activo) VALUES
 ('Ing. Martha Elena Rodríguez', 'martha.rodriguez@uteq.edu.mx', 'PROFESOR', false),
 ('Mtro. Francisco Javier Torres', 'francisco.torres@uteq.edu.mx', 'PROFESOR', true),
 ('Dra. Gabriela Ivonne Morales', 'gabriela.morales@uteq.edu.mx', 'PROFESOR', true);
+
+-- ================== COORDINADORES ====================
+INSERT INTO usuarios (nombre, email, tipo_usuario, activo, area_coordinacion, nivel_acceso) VALUES 
+('Dra. María Elena González Pérez', 'maria.gonzalez@uteq.edu.mx', 'COORDINADOR', true, 'Ingeniería en Desarrollo de Software', 'ADMINISTRADOR'),
+('Dr. Carlos Alberto Ramírez', 'carlos.ramirez@uteq.edu.mx', 'COORDINADOR', true, 'Ingeniería Industrial', 'COORDINADOR'),
+('Mtra. Ana Patricia Martínez', 'ana.martinez@uteq.edu.mx', 'COORDINADOR', true, 'Tecnologías de la Información', 'COORDINADOR'),
+('Dr. Jorge Luis Fernández', 'jorge.fernandez@uteq.edu.mx', 'COORDINADOR', true, 'Ingeniería en Sistemas', 'COORDINADOR');
 
 -- ================== ALUMNOS ====================
 INSERT INTO usuarios (nombre, email, tipo_usuario, activo, matricula, carrera, semestre) VALUES 
