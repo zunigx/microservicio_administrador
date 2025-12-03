@@ -150,30 +150,37 @@ public class UsuariosService {
         dto.setId(usuario.getId());
         dto.setNombre(usuario.getNombre());
         dto.setEmail(usuario.getEmail());
-        dto.setTipoUsuario(usuario.getTipoUsuario().toString());
+        // Evitar NPE si no hay tipo asignado aún
+        if (usuario.getTipoUsuario() != null) {
+            dto.setTipoUsuario(usuario.getTipoUsuario().toString());
+        } else {
+            dto.setTipoUsuario("DESCONOCIDO");
+        }
         dto.setActivo(usuario.isActivo());
         
-        // Agregar campos específicos según el tipo
-        switch (usuario.getTipoUsuario()) {
-            case PROFESOR:
-                if (usuario.getDivisiones() != null) {
-                    List<Long> divisiones = usuario.getDivisiones().stream()
-                        .map(ProfesoresDivisiones::getDivisionId)
-                        .collect(Collectors.toList());
-                    dto.setDivisiones(divisiones);
-                }
-                break;
-                
-            case ALUMNO:
-                dto.setMatricula(usuario.getMatricula());
-                dto.setCarrera(usuario.getCarrera());
-                dto.setSemestre(usuario.getSemestre());
-                break;
-                
-            case COORDINADOR:
-                dto.setAreaCoordinacion(usuario.getAreaCoordinacion());
-                dto.setNivelAcceso(usuario.getNivelAcceso());
-                break;
+        // Agregar campos específicos según el tipo (si está presente)
+        if (usuario.getTipoUsuario() != null) {
+            switch (usuario.getTipoUsuario()) {
+                case PROFESOR:
+                    if (usuario.getDivisiones() != null) {
+                        List<Long> divisiones = usuario.getDivisiones().stream()
+                            .map(ProfesoresDivisiones::getDivisionId)
+                            .collect(Collectors.toList());
+                        dto.setDivisiones(divisiones);
+                    }
+                    break;
+                    
+                case ALUMNO:
+                    dto.setMatricula(usuario.getMatricula());
+                    dto.setCarrera(usuario.getCarrera());
+                    dto.setSemestre(usuario.getSemestre());
+                    break;
+                    
+                case COORDINADOR:
+                    dto.setAreaCoordinacion(usuario.getAreaCoordinacion());
+                    dto.setNivelAcceso(usuario.getNivelAcceso());
+                    break;
+            }
         }
         
         return dto;
